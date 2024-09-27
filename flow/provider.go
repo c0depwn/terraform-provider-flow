@@ -74,7 +74,11 @@ func (p *provider) GetSchema(ctx context.Context) (tfsdk.Schema, diag.Diagnostic
 	}, nil
 }
 
-func (p *provider) Configure(ctx context.Context, request tfsdk.ConfigureProviderRequest, response *tfsdk.ConfigureProviderResponse) {
+func (p *provider) Configure(
+	ctx context.Context,
+	request tfsdk.ConfigureProviderRequest,
+	response *tfsdk.ConfigureProviderResponse,
+) {
 	if p.configured {
 		return
 	}
@@ -134,6 +138,7 @@ func (p *provider) GetResources(ctx context.Context) (map[string]tfsdk.ResourceT
 		"flow_compute_router_interface":             computeRouterInterfaceResourceType{},
 		"flow_compute_router_route":                 computeRouterRouteResourceType{},
 		"flow_compute_security_group":               computeSecurityGroupResourceType{},
+		"flow_compute_security_group_attachment":    computeSecurityGroupAttachmentResourceType{},
 		"flow_compute_security_group_rule":          computeSecurityGroupRuleResourceType{},
 		"flow_compute_server":                       computeServerResourceType{},
 		"flow_compute_volume":                       computeVolumeResourceType{},
@@ -200,7 +205,10 @@ func convertToLocalProviderType(p tfsdk.Provider) (prov *provider, diagnostics d
 	return
 }
 
-func waitForCondition(ctx context.Context, check func(ctx context.Context) (bool, diag.Diagnostics)) (diagnostics diag.Diagnostics) {
+func waitForCondition(
+	ctx context.Context,
+	check func(ctx context.Context) (bool, diag.Diagnostics),
+) (diagnostics diag.Diagnostics) {
 	done, d := check(ctx)
 	diagnostics.Append(d...)
 	if done || diagnostics.HasError() {
